@@ -8,8 +8,11 @@ services:
     dockerfilePath: ./Dockerfile
     # Render assigns $PORT automatically; config.ts reads it (see below).
     envVars:
+      # Use the IPv4 loopback explicitly so the client never tries IPv6 (::1),
+      # which MockServer's Netty does not bind. (NODE_OPTIONS in the Dockerfile
+      # covers mockserver-node's own hardcoded "localhost" check.)
       - key: MOCK_SERVER_HOST
-        value: localhost
+        value: 127.0.0.1
       - key: MOCK_SERVER_VERSION
         value: "6.1.0"
       - key: CONTRACTS_DIR

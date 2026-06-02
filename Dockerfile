@@ -18,5 +18,11 @@ RUN npm ci
 
 COPY . .
 
+# Resolve `localhost` to IPv4 (127.0.0.1) first. On Linux/Node 18 `localhost`
+# resolves to IPv6 (::1) first, but MockServer's Netty binds IPv4 — so
+# mockserver-node's readiness check (which hardcodes host "localhost") connects
+# to ::1, gets refused, and reports "MockServer failed to start".
+ENV NODE_OPTIONS=--dns-result-order=ipv4first
+
 # Render injects $PORT and the app binds MockServer to it (see config.ts).
 CMD ["npm", "start"]
