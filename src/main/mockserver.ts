@@ -13,6 +13,13 @@ export interface StartOptions {
   mockServerVersion?: string;
   cors?: CorsConfig;
   jvmOptions?: string[]
+  /**
+   * How long mockserver-node waits for the JVM to come up, as a retry count
+   * (~100ms each). The default of 110 (~12s) is too short on slow/constrained
+   * hosts (e.g. Render free tier), where MockServer's cold start + TLS init can
+   * take 20-40s; passing this raises the cap to 500 (~55s).
+   */
+  startupRetries?: number;
 }
 
 /**
@@ -49,6 +56,9 @@ export function startMockServer(options: StartOptions): Promise<void> {
     serverPort: options.serverPort,
     verbose: options.verbose,
     trace: options.trace,
+    // Give the JVM more time to bind the port on slow hosts. Note: mockserver-node
+    // treats any truthy startupRetries as "use 500 retries" (index.js:227).
+    startupRetries: options.startupRetries ?? 500,
   };
   if (options.mockServerVersion) {
     startOptions.mockServerVersion = options.mockServerVersion;
