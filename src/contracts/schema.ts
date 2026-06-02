@@ -40,6 +40,19 @@ export interface YamlResponse {
   text?: string;
   /** Artificial delay in milliseconds before responding. */
   delayMs?: number;
+  /**
+   * CSV data file (relative to the contract's folder) used to build the body.
+   * Each row becomes an object; a 10-row file yields a 10-element array. When
+   * `dataKey` is omitted the body is the bare array; when set, the array is
+   * placed under that key on the `json` object (a list-with-envelope shape).
+   */
+  dataFile?: string;
+  /** Key on `json` under which the CSV rows array is placed (envelope shape). */
+  dataKey?: string;
+  /**
+   * Rows parsed from `dataFile`. Populated by the loader — not a YAML field.
+   */
+  data?: Record<string, unknown>[];
 }
 
 export interface YamlExpectation {

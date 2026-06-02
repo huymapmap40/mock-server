@@ -1,6 +1,8 @@
 # Health check API — public (no auth).
 # Demonstrates multiple response cases for one endpoint, selected by a query
-# parameter, with priority controlling which matches first.
+# parameter, with priority controlling which matches first. The success case
+# also shows the CSV "envelope" shape: rows nested under a key (`dependencies`)
+# of an otherwise-static JSON object.
 service: health
 
 expectations:
@@ -36,7 +38,8 @@ expectations:
         code: 400
         message: The health check request was invalid.
 
-  # 200 — success (default / catch-all)
+  # 200 — success (default / catch-all). The per-dependency rows come from
+  # health.csv and are placed under `dependencies` (dataKey) on the json object.
   - description: Success (default)
     priority: 10
     request:
@@ -44,9 +47,8 @@ expectations:
       path: /health
     response:
       status: 200
+      dataFile: health.csv
+      dataKey: dependencies
       json:
         status: UP
         service: mock-external-service
-        checks:
-          database: UP
-          cache: UP

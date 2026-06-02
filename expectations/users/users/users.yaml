@@ -1,7 +1,17 @@
-# Users API — public (no auth). Demonstrates regex matching.
+# Users API — public (no auth). Demonstrates regex matching + CSV-backed list.
 service: users
 
 expectations:
+  # CSV-backed list: the response body is built from users.csv — one object per
+  # row, so a 10-row file returns a 10-element array.
+  - description: List users (data from users.csv)
+    request:
+      method: GET
+      path: /users
+    response:
+      status: 200
+      dataFile: users.csv
+
   # Regex PATH match: any numeric user id.
   - description: Get user by numeric id (regex path)
     request:

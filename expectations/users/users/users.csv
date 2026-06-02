@@ -1,0 +1,11 @@
+id|name|email|active
+1|Ada Lovelace|ada@example.com|true
+2|Alan Turing|alan@example.com|true
+3|Grace Hopper|grace@example.com|true
+4|Edsger Dijkstra|edsger@example.com|false
+5|Donald Knuth|donald@example.com|true
+6|Barbara Liskov|barbara@example.com|true
+7|John McCarthy|john@example.com|false
+8|Margaret Hamilton|margaret@example.com|true
+9|Dennis Ritchie|dennis@example.com|true
+10|Ken Thompson|ken@example.com|true

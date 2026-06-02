@@ -1,0 +1,6 @@
+name|status|latencyMs
+database|UP|12
+cache|UP|3
+queue|UP|8
+storage|UP|21
+auth|DEGRADED|140

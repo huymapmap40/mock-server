@@ -1,0 +1,11 @@
+id|total|status|customer.id|customer.name
+ord-1|42.5|PAID|1|Ada Lovelace
+ord-2|9.99|PENDING|2|Alan Turing
+ord-3|120.0|PAID|3|Grace Hopper
+ord-4|15.75|CANCELLED|4|Edsger Dijkstra
+ord-5|300.49|PAID|5|Donald Knuth
+ord-6|8.5|PENDING|6|Barbara Liskov
+ord-7|64.0|PAID|7|John McCarthy
+ord-8|19.99|REFUNDED|8|Margaret Hamilton
+ord-9|250.0|PAID|9|Dennis Ritchie
+ord-10|5.25|PENDING|10|Ken Thompson

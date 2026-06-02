@@ -62,13 +62,32 @@ export function toRequestMatcher(req: YamlRequest): HttpRequestMatcher {
   return matcher;
 }
 
+/**
+ * Resolve the JSON payload for a response, folding in CSV data when present.
+ *
+ * - no data            -> the inline `json` (or undefined)
+ * - data, no dataKey   -> the rows array itself
+ * - data, with dataKey -> the inline `json` object with `rows` under dataKey
+ */
+function resolveJsonBody(res: YamlResponse): unknown {
+  if (!res.data) {
+    return res.json;
+  }
+  if (res.dataKey) {
+    const base = (res.json && typeof res.json === 'object') ? res.json : {};
+    return { ...(base as Record<string, unknown>), [res.dataKey]: res.data };
+  }
+  return res.data;
+}
+
 /** Convert a YAML response block into a MockServer response. */
 export function toResponse(res: YamlResponse): HttpResponse {
   const headers = toMultiMap(res.headers) ?? {};
   let body: string | undefined;
 
-  if (res.json !== undefined) {
-    body = JSON.stringify(res.json, null, 2);
+  const json = resolveJsonBody(res);
+  if (json !== undefined) {
+    body = JSON.stringify(json, null, 2);
     if (!hasHeader(headers, 'content-type')) {
       headers['content-type'] = [JSON_CONTENT_TYPE];
     }

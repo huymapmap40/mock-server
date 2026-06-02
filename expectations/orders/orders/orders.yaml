@@ -21,7 +21,8 @@ defaultAuth:
     - admin
 
 expectations:
-  - description: List orders (needs role orders:read or admin)
+  # CSV-backed list: the body is built from orders.csv — one order per row.
+  - description: List orders (data from orders.csv, needs role orders:read or admin)
     request:
       method: GET
       path: /orders
@@ -31,13 +32,7 @@ expectations:
         - admin
     response:
       status: 200
-      json:
-        - id: ord-1
-          total: 42.5
-          status: PAID
-        - id: ord-2
-          total: 9.99
-          status: PENDING
+      dataFile: orders.csv
 
   - description: Create order (needs role orders:write or admin)
     request:

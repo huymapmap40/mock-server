@@ -3,7 +3,6 @@ import { startMockServer, stopMockServer, createClient, getLogMessage } from './
 import { loadContracts } from '../contracts/loader';
 import { registerContracts } from '../contracts/register';
 import { initLogger, log } from '../helpers/logger';
-import { registerObservedEndpoint } from '../observed-endpoint';
 
 async function main(): Promise<void> {
   // Load + validate all YAML contracts before touching the server, so a broken
@@ -25,9 +24,6 @@ async function main(): Promise<void> {
   initLogger(config.datadog);
   
   const summary = await registerContracts(client, contracts);
-
-  // Demo: a websocket request-callback endpoint that forwards a log per request.
-  await registerObservedEndpoint(client);
 
   log.info(
     `\nRegistered ${summary.total} expectation(s) from ${summary.files} contract file(s) ` +
