@@ -1,0 +1,42 @@
+# Users API — public (no auth). Demonstrates regex matching.
+service: users
+
+expectations:
+  # Regex PATH match: any numeric user id.
+  - description: Get user by numeric id (regex path)
+    request:
+      method: GET
+      path: /users/[0-9]+
+    response:
+      status: 200
+      json:
+        id: "1"
+        name: Ada Lovelace
+        email: ada@example.com
+
+  # Regex BODY match: accept create only when the JSON contains a valid email.
+  # (Send compact JSON — the regex matches against the raw body string.)
+  - description: Create user with a valid email (regex body match)
+    priority: 10
+    request:
+      method: POST
+      path: /users
+      bodyRegex: '.*"email"\s*:\s*".+@.+\..+".*'
+    response:
+      status: 201
+      json:
+        id: "2"
+        status: created
+
+  # Lower-priority catch-all: reject create when the body has no valid email.
+  - description: Reject create user without a valid email
+    priority: 5
+    request:
+      method: POST
+      path: /users
+    response:
+      status: 422
+      json:
+        status: ERROR
+        code: 422
+        message: A valid email is required.

@@ -1,0 +1,52 @@
+# Health check API — public (no auth).
+# Demonstrates multiple response cases for one endpoint, selected by a query
+# parameter, with priority controlling which matches first.
+service: health
+
+expectations:
+  # 5xx — internal server error
+  - description: Internal server error scenario
+    priority: 20
+    request:
+      method: GET
+      path: /health
+      query:
+        scenario: server-error
+    response:
+      status: 500
+      json:
+        status: DOWN
+        error: Internal Server Error
+        code: 500
+        message: The service encountered an unexpected internal condition.
+
+  # 4xx — client error
+  - description: Client error scenario
+    priority: 20
+    request:
+      method: GET
+      path: /health
+      query:
+        scenario: client-error
+    response:
+      status: 400
+      json:
+        status: ERROR
+        error: Bad Request
+        code: 400
+        message: The health check request was invalid.
+
+  # 200 — success (default / catch-all)
+  - description: Success (default)
+    priority: 10
+    request:
+      method: GET
+      path: /health
+    response:
+      status: 200
+      json:
+        status: UP
+        service: mock-external-service
+        checks:
+          database: UP
+          cache: UP

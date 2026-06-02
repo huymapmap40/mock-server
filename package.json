@@ -1,0 +1,43 @@
+{
+  "name": "mock-server",
+  "version": "1.0.0",
+  "description": "Contract-based HTTP mock server built on MockServer. Lets teams develop and test against external APIs that are not ready yet in test/staging/production.",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "ts-node src/main/index.ts",
+    "dev": "ts-node src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "serve": "node dist/index.js",
+    "stop": "ts-node src/stop.ts",
+    "token": "ts-node src/auth/token-cli.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "keywords": [
+    "mockserver",
+    "mock",
+    "api",
+    "contract",
+    "testing",
+    "stub"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "datadog-winston": "^1.6.0",
+    "dotenv": "^16.4.5",
+    "js-yaml": "^4.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mockserver-client": "6.1.0",
+    "mockserver-node": "6.1.0",
+    "winston": "^3.19.0",
+    "yarn": "^1.22.22"
+  },
+  "devDependencies": {
+    "@datadog/browser-logs": "^7.2.0",
+    "@types/datadog-winston": "^1.0.7",
+    "@types/js-yaml": "^4.0.9",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/node": "^18.19.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}

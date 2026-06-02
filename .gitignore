@@ -1,0 +1,9 @@
+node_modules/
+dist/
+*.log
+
+# Local environment overrides (keep .env.example committed instead)
+.env
+
+# MockServer downloads the netty jar next to the module on first run
+mockserver-netty-*.jar

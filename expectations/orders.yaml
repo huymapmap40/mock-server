@@ -1,0 +1,54 @@
+# Orders API — JWT protected with per-service RBAC.
+#
+# defaultAuth applies to every endpoint in this file: the caller must present a
+# valid JWT whose `service` claim is one of the allowed services. Each endpoint
+# then narrows access further with its own required roles.
+#
+# Mint a token with:
+#   npm run token -- --service orders --roles orders:read,orders:write
+#
+# Outcomes per request:
+#   - no / invalid token            -> 401 Unauthorized
+#   - valid token, wrong service    -> 403 Forbidden
+#   - valid token, missing role     -> 403 Forbidden
+#   - valid token with right role   -> the response below
+service: orders
+
+defaultAuth:
+  required: true
+  services:
+    - orders
+    - admin
+
+expectations:
+  - description: List orders (needs role orders:read or admin)
+    request:
+      method: GET
+      path: /orders
+    auth:
+      roles:
+        - orders:read
+        - admin
+    response:
+      status: 200
+      json:
+        - id: ord-1
+          total: 42.5
+          status: PAID
+        - id: ord-2
+          total: 9.99
+          status: PENDING
+
+  - description: Create order (needs role orders:write or admin)
+    request:
+      method: POST
+      path: /orders
+    auth:
+      roles:
+        - orders:write
+        - admin
+    response:
+      status: 201
+      json:
+        id: ord-3
+        status: CREATED
