@@ -17,6 +17,8 @@ services:
         value: "6.1.0"
       - key: CONTRACTS_DIR
         value: expectations
+      - key: MOCK_SERVER_PORT
+        value: 9090
       # CORS: with credentials enabled the spec forbids "*", so pin a real
       # origin in the dashboard if you turn credentials on.
       - key: CORS_ENABLED
