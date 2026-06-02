@@ -1,0 +1,7 @@
+node_modules
+npm-debug.log
+.git
+.env
+# mockserver-node downloads its own jar at runtime; no need to ship this 42MB copy.
+mockserver-netty-*.jar
+dist

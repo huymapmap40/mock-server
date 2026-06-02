@@ -1,0 +1,32 @@
+# Render Blueprint — deploys the mock server as a Docker web service so the
+# image can ship a JRE for MockServer (the native Node runtime cannot).
+services:
+  - type: web
+    name: mock-server
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    # Render assigns $PORT automatically; config.ts reads it (see below).
+    envVars:
+      - key: MOCK_SERVER_HOST
+        value: localhost
+      - key: MOCK_SERVER_VERSION
+        value: "6.1.0"
+      - key: CONTRACTS_DIR
+        value: expectations
+      # CORS: with credentials enabled the spec forbids "*", so pin a real
+      # origin in the dashboard if you turn credentials on.
+      - key: CORS_ENABLED
+        value: "true"
+      - key: CORS_ALLOW_ORIGIN
+        value: "*"
+      - key: CORS_ALLOW_CREDENTIALS
+        value: "false"
+      # Secrets — set the real values in the Render dashboard (sync: false keeps
+      # them out of source control).
+      - key: JWT_SECRET
+        sync: false
+      - key: DD_ENABLED
+        value: "false"
+      - key: DD_API_KEY
+        sync: false

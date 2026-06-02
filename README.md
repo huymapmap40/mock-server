@@ -282,5 +282,6 @@ http://localhost:1080/mockserver/dashboard
 
 - This iteration covers **HTTP** request mocking. HTTPS and proxy/forwarding
   modes are supported by MockServer and can be layered on later.
-- `MOCK_SERVER_VERSION` pins the MockServer (netty jar) version; `5.15.0` is the
-  version bundled with `mockserver-node`, so no download is needed at runtime.
+- `MOCK_SERVER_VERSION` pins the MockServer (netty jar) version; `6.1.0` is the
+  latest release and is downloaded from Maven Central on first run. Keep this in
+  sync everywhere — mixing versions leaves orphaned jars that break startup.

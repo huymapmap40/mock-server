@@ -68,7 +68,9 @@ export interface MockServerConfig {
 
 export const config: MockServerConfig = {
   host: readEnv('MOCK_SERVER_HOST', 'localhost'),
-  port: Number(readEnv('MOCK_SERVER_PORT', '1080')),
+  // Prefer $PORT (injected by hosts like Render/Heroku); fall back to
+  // MOCK_SERVER_PORT for local runs, then the default.
+  port: Number(process.env.PORT ?? readEnv('MOCK_SERVER_PORT', '1080')),
   verbose: readBool('MOCK_SERVER_VERBOSE', true),
   trace: readBool('MOCK_SERVER_TRACE', false),
   mockServerVersion: readEnv('MOCK_SERVER_VERSION', '6.1.0'),
