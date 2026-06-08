@@ -5,6 +5,25 @@ A contract-based HTTP **mock server** built on top of
 via the [`mockserver-node`](https://mock-server.com/mock_server/running_mock_server.html#mockserver_node)
 module.
 
+## Live demo
+
+A running instance is deployed on [Render](https://render.com):
+
+- **Dashboard:** https://mock-server-y8ct.onrender.com/mockserver/dashboard
+
+Send a few requests, then refresh the dashboard to watch them logged live:
+
+```bash
+curl --location 'https://mock-server-y8ct.onrender.com/orders'
+curl --location 'https://mock-server-y8ct.onrender.com/users'
+curl --location 'https://mock-server-y8ct.onrender.com/health'
+```
+
+> **⚠️ Cold start:** the free Render tier spins the service down after a period
+> of inactivity. The **first** request after idle can take **≥ 50 seconds**
+> while the instance wakes up. Let it complete, then go back and refresh the
+> dashboard to see the request appear.
+
 ## Why
 
 It lets the development team build and test against external APIs **before they
@@ -269,8 +288,16 @@ contract's `services` (and the needed roles per endpoint).
 ### Dashboard
 
 ```
+# Local
 http://localhost:1080/mockserver/dashboard
+
+# Live (Render)
+https://mock-server-y8ct.onrender.com/mockserver/dashboard
 ```
+
+The dashboard logs every incoming request/response in real time. Fire the curl
+commands from the [Live demo](#live-demo) section above, then refresh to see
+them. Remember the **≥ 50s cold-start** delay on the first request after idle.
 
 ## Adding more APIs
 
