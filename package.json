@@ -10,7 +10,10 @@
     "serve": "node dist/index.js",
     "stop": "ts-node src/stop.ts",
     "token": "ts-node src/auth/token-cli.ts",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test:it": "playwright test -c it-test/playwright.config.ts",
+    "test:it:ui": "playwright test -c it-test/playwright.config.ts --ui",
+    "test:it:report": "playwright show-report it-test/playwright-report"
   },
   "keywords": [
     "mockserver",
@@ -33,6 +36,7 @@
   },
   "devDependencies": {
     "@datadog/browser-logs": "^7.2.0",
+    "@playwright/test": "1.49.1",
     "@types/datadog-winston": "^1.0.7",
     "@types/js-yaml": "^4.0.9",
     "@types/jsonwebtoken": "^9.0.6",

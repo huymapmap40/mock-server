@@ -55,6 +55,10 @@ mock-server/
 │   ├── health.yaml             #   public, multi-case (200/4xx/5xx)
 │   ├── users.yaml              #   public, regex matching demo
 │   └── orders.yaml             #   JWT + RBAC protected demo
+├── it-test/                    # Playwright integration tests (see below)
+│   ├── playwright.config.ts    #   boots the server via webServer, then tests
+│   ├── tests/                  #   one spec per API (health/users/orders/cors)
+│   └── utils/token.ts          #   mints mock JWTs for protected endpoints
 └── src/
     ├── config.ts               # Loads all settings from .env
     ├── types.ts                # Typed subset of the MockServer API
@@ -90,6 +94,9 @@ registers all expectations. Stop with `Ctrl+C` (or `npm run stop` elsewhere).
 | `npm run stop`      | Stop a running server on the configured port.        |
 | `npm run token`     | Mint a JWT (see JWT/RBAC below).                      |
 | `npm run typecheck` | Type-check without emitting files.                   |
+| `npm run test:it`   | Run the Playwright integration tests (see below).    |
+| `npm run test:it:ui`| Run the integration tests in Playwright's UI mode.   |
+| `npm run test:it:report` | Open the last HTML test report.                 |
 
 ## Defining contracts (YAML)
 
@@ -298,6 +305,46 @@ https://mock-server-y8ct.onrender.com/mockserver/dashboard
 The dashboard logs every incoming request/response in real time. Fire the curl
 commands from the [Live demo](#live-demo) section above, then refresh to see
 them. Remember the **≥ 50s cold-start** delay on the first request after idle.
+
+## Integration tests (it-test)
+
+[`it-test/`](it-test/) holds end-to-end Playwright tests that exercise every
+shipped contract over real HTTP. They use Playwright's
+[`webServer`](it-test/playwright.config.ts) block, so the suite is
+self-contained: it runs `npm start` (the actual mock server), waits for
+`/health` to answer, runs the specs against it, then tears the server down.
+
+```bash
+npm install            # one-time: pulls in @playwright/test
+npm run test:it        # boots the server + runs all specs
+npm run test:it:ui     # same, in Playwright's interactive UI
+```
+
+You do **not** need to start the server yourself. If one is already running on
+the configured port, the tests reuse it locally (`reuseExistingServer`); in CI
+(`CI=1`) they always boot a fresh one. The server URL follows the same env vars
+as the app — `$PORT` / `MOCK_SERVER_PORT` (default `1080`) and
+`MOCK_SERVER_HOST`.
+
+### What's covered
+
+| Spec                                       | Endpoint(s)                              | Asserts                                              |
+| ------------------------------------------ | ---------------------------------------- | --------------------------------------------------- |
+| [`health.spec.ts`](it-test/tests/health.spec.ts) | `GET /health` (+ `?scenario=…`)    | 200 UP with the 5 CSV dependencies, plus 400 / 500 cases |
+| [`users.spec.ts`](it-test/tests/users.spec.ts)   | `GET /users`, `GET /users/{n}`, `POST /users` | 10-row CSV list, regex path, regex-body 201 vs 422 |
+| [`orders.spec.ts`](it-test/tests/orders.spec.ts) | `GET /orders`, `POST /orders`      | JWT-token requests → 200 list (nested customer) / 201 created |
+| [`cors.spec.ts`](it-test/tests/cors.spec.ts)     | `OPTIONS` preflight, `GET /health` | the configured CORS headers are returned            |
+
+Tokens for the protected Orders API are minted in-test by
+[`utils/token.ts`](it-test/utils/token.ts), which mirrors
+[`src/auth/jwt.ts`](src/auth/jwt.ts) (same HS256 secret + issuer) — the
+equivalent of `npm run token -- --service orders --roles orders:read`.
+
+> **Note:** RBAC is declared in `orders.yaml` but the current runner
+> ([`register.ts`](src/contracts/register.ts)) registers the static matchers
+> without enforcing the JWT/RBAC checks, so unauthenticated requests still
+> succeed today. `orders.spec.ts` pins this real behaviour; flip those
+> expectations to `401` / `403` once enforcement is wired in.
 
 ## Adding more APIs
 
